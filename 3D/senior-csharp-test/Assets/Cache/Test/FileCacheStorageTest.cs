@@ -1,7 +1,6 @@
 using NUnit.Framework;
 using Zenject;
 
-
 [ TestFixture ]
 public class FileCacheStorageTest : ZenjectUnitTestFixture
 {

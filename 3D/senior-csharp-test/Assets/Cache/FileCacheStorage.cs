@@ -1,22 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
+using UnityEngine;
 
 [ Serializable ]
 public class FileCacheStorage : ICacheStorage
 {
-	private const string ACTUAL_VERSION = "1.0";
+	private const string CURRENT_VERSION = "1.0";
 	private const string DATE_FORMAT = "yyMMdd";
 	private const float EXPIRING_TIME_DAYS = 60f;
+
 	private readonly string _cachePath;
-	private readonly Dictionary<string, FileCacheEntry> _cacheEntries = new Dictionary<string, FileCacheEntry>();
+	private readonly Dictionary<string, FileCacheEntry> _cacheEntryById = new Dictionary<string, FileCacheEntry>();
 	private readonly string _fileName;
 	private readonly IFileSystem _fileSystem;
 	private readonly ISerializer _serializer;
-	public List<FileCacheEntry> CacheEntries = new List<FileCacheEntry>();
-	public string Version;
+
+	[ SerializeField ]
+	private List<FileCacheEntry> _cacheEntries = new List<FileCacheEntry>();
+
+	[ SerializeField ]
+	private string _version;
 
 	[ Serializable ]
 	public class FileCacheEntry : CacheEntry<string>
@@ -52,16 +56,17 @@ public class FileCacheStorage : ICacheStorage
 			return;
 		}
 
-		if( TryLoadCacheEntries() )
+		if( DeserializeCacheEntries() )
 		{
-			CheckCacheVersion();
-			ClearExpiredEntries();
+			if( !IsCurrentVersion() )
+				DeleteAll();
+			ClearExpiredCacheEntries();
 		}
 		else
 			DeleteAll();
 	}
 
-	private bool TryLoadCacheEntries()
+	private bool DeserializeCacheEntries()
 	{
 		string filePath = _cachePath + "/" + _fileName;
 
@@ -90,31 +95,30 @@ public class FileCacheStorage : ICacheStorage
 
 	private void CopyDeserializedEntriesToDic()
 	{
-		_cacheEntries.Clear();
-		foreach( FileCacheEntry cacheEntry in CacheEntries )
-			_cacheEntries.Add( cacheEntry.Id, cacheEntry );
+		_cacheEntryById.Clear();
+		foreach( FileCacheEntry cacheEntry in _cacheEntries )
+			_cacheEntryById.Add( cacheEntry.Id, cacheEntry );
 	}
 
-	private void CheckCacheVersion()
+	private bool IsCurrentVersion()
 	{
-		if( Version != ACTUAL_VERSION )
-			DeleteAll();
+		return _version == CURRENT_VERSION;
 	}
 
-	private void ClearExpiredEntries()
+	private void ClearExpiredCacheEntries()
 	{
-		List<FileCacheEntry> expiredEntries = GetExpiredEntries();
+		List<FileCacheEntry> expiredEntries = GetExpiredCacheEntries();
 
 		foreach( FileCacheEntry t in expiredEntries )
-			Delete( t.Id );
+			Remove( t.Id );
 	}
 
-	private List<FileCacheEntry> GetExpiredEntries()
+	private List<FileCacheEntry> GetExpiredCacheEntries()
 	{
 		DateTime dateNow = DateTime.Now;
 		List<FileCacheEntry> expiredEntries = new List<FileCacheEntry>();
 
-		foreach( KeyValuePair<string, FileCacheEntry> ce in _cacheEntries )
+		foreach( KeyValuePair<string, FileCacheEntry> ce in _cacheEntryById )
 		{
 			DateTime datetime = GetEntryLastUseDate( ce.Value );
 			TimeSpan span = dateNow - datetime;
@@ -128,8 +132,7 @@ public class FileCacheStorage : ICacheStorage
 
 	private void UpdateUseDate( string id )
 	{
-		if( _cacheEntries.ContainsKey( id ) )
-			_cacheEntries[ id ].LastUseDate = DateTime.Now.ToString( DATE_FORMAT );
+		_cacheEntryById[ id ].LastUseDate = DateTime.Now.ToString( DATE_FORMAT );
 	}
 
 	private DateTime GetEntryLastUseDate( FileCacheEntry entry )
@@ -145,14 +148,6 @@ public class FileCacheStorage : ICacheStorage
 		_fileSystem.Write( path, value );
 	}
 
-	private void CopyEntriesToSerializeList()
-	{
-		CacheEntries.Clear();
-
-		foreach( KeyValuePair<string, FileCacheEntry> ce in _cacheEntries )
-			CacheEntries.Add( ce.Value );
-	}
-
 	private void DeleteFile( FileCacheEntry ce )
 	{
 		if( ce.Data == null )
@@ -164,69 +159,48 @@ public class FileCacheStorage : ICacheStorage
 			_fileSystem.DeleteFile( path );
 	}
 
-	private void UpdateDataEntries()
+	private void DeleteAll()
 	{
-		List<FileCacheEntry> oldEntries = _cacheEntries.Values.ToList();
+		_cacheEntryById.Clear();
 		_cacheEntries.Clear();
-		TryLoadCacheEntries();
+		_fileSystem.DeleteDir( _cachePath );
+	}
 
-		foreach( FileCacheEntry oldCe in oldEntries )
-		{
-			if( !_cacheEntries.ContainsKey( oldCe.Id ) )
-				_cacheEntries.Add( oldCe.Id, oldCe );
-			else
-			{
-				DateTime dateNewEntry = GetEntryLastUseDate( _cacheEntries[ oldCe.Id ] );
-				DateTime dateOldEntry = GetEntryLastUseDate( oldCe );
+	private bool Has( string id )
+	{
+		return _cacheEntryById.ContainsKey( id );
+	}
 
-				if( DateTime.Compare( dateNewEntry, dateOldEntry ) < 0 )
-					_cacheEntries[ oldCe.Id ] = oldCe;
-			}
-		}
+	private bool MatchesVersion( string id, string version )
+	{
+		return _cacheEntryById[ id ].Version == version;
 	}
 
 	public byte[] Get( string id )
 	{
-		if( !_cacheEntries.TryGetValue( id, out FileCacheEntry ce ) )
+		if( !_cacheEntryById.TryGetValue( id, out FileCacheEntry ce ) )
 			return null;
 
+		byte[] result = _fileSystem.Read( ce.Data );
+
 		UpdateUseDate( id );
-		return _fileSystem.Read( ce.Data );
+
+		return result;
 	}
 
-	public bool Has( string id )
-    {
-        return _cacheEntries.ContainsKey( id );
-    }
-
-	public bool MatchesVersion( string id, string version )
-	{
-		try
-		{
-			if( _cacheEntries[ id ].Version == version )
-				return true;
-		}
-		catch( Exception e )
-		{
-			Log.LogError( "Cache entry id = " + id + " not found : " + e );
-		}
-
-		return false;
-	}
-
-	public void Set( byte[] value, string id, string version )
+	public void Add( string id, byte[] value, string version )
 	{
 		string path = _cachePath + "/" + id;
 
 		if( !Has( id ) || !_fileSystem.FileExists( path ) || !MatchesVersion( id, version ) )
 			SaveFile( path, value );
 
-		_cacheEntries[ id ] = new FileCacheEntry( id, version, path, DateTime.Now.ToString( DATE_FORMAT ) );
+		_cacheEntryById[ id ] = new FileCacheEntry( id, version, path, DateTime.Now.ToString( DATE_FORMAT ) );
 	}
 
-	public void Delete( string id )
+	public void Remove( string id )
 	{
-		if( !_cacheEntries.TryGetValue( id, out FileCacheEntry ce ) )
+		if( !_cacheEntryById.TryGetValue( id, out FileCacheEntry ce ) )
 			return;
 
 		try
@@ -239,31 +213,6 @@ public class FileCacheStorage : ICacheStorage
 			return;
 		}
 
-		_cacheEntries.Remove( id );
-	}
-
-	public void DeleteAll()
-	{
-		_cacheEntries.Clear();
-		CacheEntries.Clear();
-		_fileSystem.DeleteDir( _cachePath );
-	}
-
-	public void SaveCacheStorageFile()
-	{
-		if( !_fileSystem.DirExists( _cachePath ) )
-			return;
-
-		UpdateDataEntries();
-		Version = ACTUAL_VERSION;
-		CopyEntriesToSerializeList();
-		string dataCacheTxt = _serializer.Serialize( this );
-
-		string cacheFilePath = _cachePath + "/" + _fileName;
-
-		if( _fileSystem.FileExists( cacheFilePath ) )
-			_fileSystem.DeleteFile( cacheFilePath );
-
-		_fileSystem.Write( cacheFilePath, Encoding.UTF8.GetBytes( dataCacheTxt ) );
+		_cacheEntryById.Remove( id );
 	}
 }

@@ -4,9 +4,7 @@ public class SerializerJson : ISerializer
 {
 	public string Serialize( object obj )
 	{
-		string txt = string.Empty;
-
-		txt = JsonUtility.ToJson( obj );
+		string txt = JsonUtility.ToJson( obj );
 		return txt;
 	}
 

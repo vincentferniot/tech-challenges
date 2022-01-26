@@ -1,9 +1,6 @@
 ﻿public interface ICacheStorage
 {
-	void Delete( string id );
-	void Set( byte[] data, string id, string version = null );
+	void Add( string id, byte[] data, string version );
+	void Remove( string id );
 	byte[] Get( string id );
-	bool Has( string id );
-	bool MatchesVersion( string id, string version );
-	void DeleteAll();
 }

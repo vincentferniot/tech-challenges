@@ -20,8 +20,8 @@ public class CacheEntry<T>
 		if( string.IsNullOrEmpty( lastUseDate ) )
 			throw new NullReferenceException( nameof( lastUseDate ) );
 
-        if( EqualityComparer<T>.Default.Equals( data, default ) )
-			throw new NullReferenceException(nameof( data ) );
+		if( EqualityComparer<T>.Default.Equals( data, default ) )
+			throw new NullReferenceException( nameof( data ) );
 
 		Id = id;
 		Version = version;
