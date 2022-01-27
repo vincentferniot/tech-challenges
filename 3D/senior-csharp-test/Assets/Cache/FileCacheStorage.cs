@@ -167,11 +167,6 @@ public class FileCacheStorage : ICacheStorage
 		_fileSystem.DeleteDir( _cachePath );
 	}
 
-	private bool Has( string id )
-	{
-		return _cacheEntryById.ContainsKey( id );
-	}
-
 	public byte[] Get( string id )
 	{
 		if( !_cacheEntryById.TryGetValue( id, out FileCacheEntry ce ) )
@@ -188,8 +183,7 @@ public class FileCacheStorage : ICacheStorage
 	{
 		string path = _cachePath + "/" + id;
 
-		if( !Has( id ) || !_fileSystem.FileExists( path ) )
-			SaveFile( path, value );
+		SaveFile( path, value );
 
 		_cacheEntryById[ id ] = new FileCacheEntry( id, path, DateTime.Now.ToString( DATE_FORMAT ) );
 	}
