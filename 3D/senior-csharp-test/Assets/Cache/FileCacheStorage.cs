@@ -26,7 +26,7 @@ public class FileCacheStorage : ICacheStorage
 	public class FileCacheEntry : CacheEntry<string>
 	{
 		//FileCacheEntry stores the path of a file which contains the data, and not the data itself
-		public FileCacheEntry( string id, string version, string pathData, string lastUseDate ) : base( id, version, pathData, lastUseDate )
+		public FileCacheEntry( string id, string pathData, string lastUseDate ) : base( id, pathData, lastUseDate )
 		{
 		}
 	}
@@ -61,7 +61,7 @@ public class FileCacheStorage : ICacheStorage
 			if( !IsCurrentVersion() )
 				DeleteAll();
 			else
-			    ClearExpiredCacheEntries();
+				ClearExpiredCacheEntries();
 		}
 		else
 			DeleteAll();
@@ -172,11 +172,6 @@ public class FileCacheStorage : ICacheStorage
 		return _cacheEntryById.ContainsKey( id );
 	}
 
-	private bool MatchesVersion( string id, string version )
-	{
-		return _cacheEntryById[ id ].Version == version;
-	}
-
 	public byte[] Get( string id )
 	{
 		if( !_cacheEntryById.TryGetValue( id, out FileCacheEntry ce ) )
@@ -189,14 +184,14 @@ public class FileCacheStorage : ICacheStorage
 		return result;
 	}
 
-	public void Add( string id, byte[] value, string version )
+	public void Add( string id, byte[] value )
 	{
 		string path = _cachePath + "/" + id;
 
-		if( !Has( id ) || !_fileSystem.FileExists( path ) || !MatchesVersion( id, version ) )
+		if( !Has( id ) || !_fileSystem.FileExists( path ) )
 			SaveFile( path, value );
 
-		_cacheEntryById[ id ] = new FileCacheEntry( id, version, path, DateTime.Now.ToString( DATE_FORMAT ) );
+		_cacheEntryById[ id ] = new FileCacheEntry( id, path, DateTime.Now.ToString( DATE_FORMAT ) );
 	}
 
 	public void Remove( string id )
