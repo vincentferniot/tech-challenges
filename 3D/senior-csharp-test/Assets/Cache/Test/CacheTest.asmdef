@@ -1,8 +1,6 @@
 {
     "name": "CacheTest",
     "references": [
-        "Zenject",
-        "Zenject-TestFramework",
         "Cache",
         "Utils"
     ],

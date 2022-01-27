@@ -300,14 +300,11 @@
     <Reference Include="SyntaxTree.VisualStudio.Unity.Bridge">
       <HintPath>C:/Program Files (x86)/Microsoft Visual Studio Tools for Unity/16.0/Editor/SyntaxTree.VisualStudio.Unity.Bridge.dll</HintPath>
     </Reference>
-    <Reference Include="Castle.Core">
-      <HintPath>C:/workspace/Technical-Challenge/3D/senior-csharp-test/Assets/Plugins/Zenject/Source/Editor/AutoMocking/Moq-Net46/Moq/Castle.Core.dll</HintPath>
-    </Reference>
     <Reference Include="Moq">
-      <HintPath>C:/workspace/Technical-Challenge/3D/senior-csharp-test/Assets/Plugins/Zenject/Source/Editor/AutoMocking/Moq-Net46/Moq/Moq.dll</HintPath>
+      <HintPath>C:/workspace/Technical-Challenge/3D/senior-csharp-test/Assets/Plugins/Moq/Moq.dll</HintPath>
     </Reference>
-    <Reference Include="Zenject-usage">
-      <HintPath>C:/workspace/Technical-Challenge/3D/senior-csharp-test/Assets/Plugins/Zenject/Source/Usage/Zenject-usage.dll</HintPath>
+    <Reference Include="Castle.Core">
+      <HintPath>C:/workspace/Technical-Challenge/3D/senior-csharp-test/Assets/Plugins/Moq/Castle.Core.dll</HintPath>
     </Reference>
     <Reference Include="mscorlib">
       <HintPath>C:/Program Files/Unity/Hub/Editor/2018.3.12f1/Editor/Data/MonoBleedingEdge/lib/mono/4.7.1-api/mscorlib.dll</HintPath>
@@ -665,14 +662,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="Zenject.csproj">
-      <Project>{72905650-1666-A875-B741-729B2BBFDEE0}</Project>
-      <Name>Zenject</Name>
-    </ProjectReference>
-    <ProjectReference Include="Zenject-TestFramework.csproj">
-      <Project>{7CC35A20-5384-1A1D-37D9-B8A429B6FF5A}</Project>
-      <Name>Zenject-TestFramework</Name>
-    </ProjectReference>
     <ProjectReference Include="Cache.csproj">
       <Project>{6000EE1D-D7BA-B0FA-CF23-5D4C47084BF9}</Project>
       <Name>Cache</Name>
