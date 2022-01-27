@@ -1,10 +1,10 @@
 using NUnit.Framework;
 
-[TestFixture]
+[ TestFixture ]
 public class FileCacheStorageTest
 {
-    [Test]
-    public void SampleTest()
-    {
-    }
+	[ Test ]
+	public void SampleTest()
+	{
+	}
 }
