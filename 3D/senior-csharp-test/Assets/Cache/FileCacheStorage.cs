@@ -190,7 +190,7 @@ public class FileCacheStorage : ICacheStorage
 
 	public void Remove( string id )
 	{
-		if( !_cacheEntryById.TryGetValue( id, out FileCacheEntry ce ) )
+		if( string.IsNullOrEmpty( id ) || !_cacheEntryById.TryGetValue( id, out FileCacheEntry ce ) )
 			return;
 
 		try
