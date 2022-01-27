@@ -60,7 +60,8 @@ public class FileCacheStorage : ICacheStorage
 		{
 			if( !IsCurrentVersion() )
 				DeleteAll();
-			ClearExpiredCacheEntries();
+			else
+			    ClearExpiredCacheEntries();
 		}
 		else
 			DeleteAll();
