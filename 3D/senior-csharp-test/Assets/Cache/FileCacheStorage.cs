@@ -181,6 +181,9 @@ public class FileCacheStorage : ICacheStorage
 
 	public void Add( string id, byte[] value )
 	{
+		if( string.IsNullOrEmpty( id ) )
+			return;
+
 		string path = _cachePath + "/" + id;
 
 		SaveFile( path, value );
