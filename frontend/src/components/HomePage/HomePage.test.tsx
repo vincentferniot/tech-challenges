@@ -1,8 +1,8 @@
 import { render, screen } from '@testing-library/react';
-import SurveyItem from '.';
+import HomePage from '.';
 
 test('renders learn react link', () => {
-  render(<SurveyItem code="tata" name="toto" />);
+  render(<HomePage />);
   const linkElement = screen.getByText(/learn react/i);
   expect(linkElement).toBeInTheDocument();
 });

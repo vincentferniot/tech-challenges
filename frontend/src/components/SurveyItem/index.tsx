@@ -1,19 +1,17 @@
 import './SurveyItem.css';
+import { Link } from 'react-router-dom';
 
 type SurveyItemProps = {
-    onClick: () => any,
     code: string,
-    name: string
+    name: string,
 }
 
-export default function SurveyItem({ onClick, code, name }: SurveyItemProps) {
+export default function SurveyItem({ code, name }: SurveyItemProps) {
 
     return (
-        <tr
-            onClick={onClick}
-        >
-            <td>{name}</td>
-            <td>{code}</td>
+        <tr className="SurveyItem">
+            <td><Link to={`surveys/${code}`}>{name}</Link></td>
+            <td><Link to={`surveys/${code}`}>{code}</Link></td>
         </tr>
     );
 }

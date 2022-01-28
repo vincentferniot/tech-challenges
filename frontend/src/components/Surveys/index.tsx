@@ -23,7 +23,6 @@ function Surveys() {
             {list.map((survey) => (
                 <SurveyItem
                     key={survey.code}
-                    onClick={() => dispatch(fetchSurveyByCodeAsync(survey.code))}
                     {...survey}
                 />
             ))}
