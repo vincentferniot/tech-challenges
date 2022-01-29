@@ -1,0 +1,10 @@
+.Layout {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.Layout main {
+  max-width: 90vw;
+  width: 900px;
+}

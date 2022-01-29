@@ -4,10 +4,8 @@ import './HomePage.css';
 function HomePage() {
   return (
     <div className="HomePage">
-      <main>
-        <h1>Surveys</h1>
-        <Surveys />
-      </main>
+      <h2>All available surveys</h2>
+      <Surveys />
     </div>
   );
 }

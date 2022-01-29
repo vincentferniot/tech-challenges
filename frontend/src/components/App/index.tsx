@@ -1,17 +1,20 @@
 import { Routes, Route } from 'react-router-dom';
 import HomePage from '../HomePage';
 import SurveyPage from '../SurveyPage';
+import NotFound from '../NotFound';
+import Layout from '../Layout';
 import './App.css';
 
 function App() {
   return (
     <div className="App">
-      <main>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<HomePage />} />
           <Route path="/surveys/:code" element={<SurveyPage />} />
-        </Routes>
-      </main>
+          <Route path="*" element={<NotFound />} />
+        </Route>
+      </Routes>
     </div>
   );
 }
