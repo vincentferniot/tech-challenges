@@ -9,6 +9,11 @@ interface ProcessData {
   data: {}
 };
 
+/**
+ * Process data to fit ChartJS structure
+ * @param state 
+ * @returns 
+ */
 export const processData = (state: RootState): ProcessData[] => {
   return state.surveys.current.map(({type, label, result}) => {
     const colors = Object.values(result).map(() => random());
@@ -46,6 +51,11 @@ export const processData = (state: RootState): ProcessData[] => {
   });
 }
 
+/**
+ * get filtered list of surveys
+ * @param state 
+ * @returns Survey[]
+ */
 export const getFilteredSurveysList = (state: RootState): Survey[] => {
   return state.surveys.list.filter(survey => {
     const hasCode = survey.code.toLowerCase().includes(state.surveys.search.toLowerCase());

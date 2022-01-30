@@ -6,6 +6,7 @@ import Layout from '../Layout';
 import './App.css';
 
 function App() {
+  console.log(process.env.REACT_APP_BASE_URL);
   return (
     <div className="App">
       <Routes>

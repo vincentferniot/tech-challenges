@@ -21,12 +21,12 @@ function Surveys() {
                 </tr>
             </thead>
             <tbody>
-            {list.map((survey) => (
-                <SurveyItem
-                    key={survey.code}
-                    {...survey}
-                />
-            ))}
+                {list.map((survey) => (
+                    <SurveyItem
+                        key={survey.code}
+                        {...survey}
+                    />
+                ))}
             </tbody>
         </table>
     );

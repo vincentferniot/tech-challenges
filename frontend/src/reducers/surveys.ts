@@ -9,6 +9,7 @@ export interface SurveyData {
   type: 'qcm' | 'numeric' | 'date',
   label: string,
   result: any
+  // TODO: should be as below => doesn't take string[] into account
   // result: number | string[] | {}
 }
 export interface SurveysState {
@@ -22,7 +23,7 @@ const initialState: SurveysState = {
     list: [],
     status: 'idle',
     current: [],
-    search: 'cucou',
+    search: '',
 };
 
 export const surveysSlice = createSlice({
