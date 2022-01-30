@@ -5,14 +5,22 @@ export interface Survey {
     code: string;
 }
 
+export interface SurveyData {
+  type: 'qcm' | 'numeric' | 'date',
+  label: string,
+  result: any
+  // result: number | string[] | {}
+}
 export interface SurveysState {
     list: Survey[];
+    current: SurveyData[] | [];
     status: 'idle' | 'loading' | 'failed';
 }
 
 const initialState: SurveysState = {
     list: [],
     status: 'idle',
+    current: [],
 };
 
 export const surveysSlice = createSlice({
@@ -30,6 +38,16 @@ export const surveysSlice = createSlice({
         })
         .addCase(fetchSurveysAsync.rejected, (state) => {
           state.status = 'failed';
+        })
+        .addCase(fetchSurveyByCodeAsync.pending, (state) => {
+          state.status = 'loading';
+        })
+        .addCase(fetchSurveyByCodeAsync.fulfilled, (state, action) => {
+          state.status = 'idle';
+          state.current = action.payload;
+        })
+        .addCase(fetchSurveyByCodeAsync.rejected, (state) => {
+          state.status = 'failed';
         });
     },
 });
@@ -44,7 +62,7 @@ export const fetchSurveysAsync = createAsyncThunk(
 
 export const fetchSurveyByCodeAsync = createAsyncThunk(
   'surveys/fetchByCode',
-  async (code: string) => {
+  async (code?: string) => {
     const res = await fetchSurveyByCode(code);
     console.log(res.data);
     return res.data;

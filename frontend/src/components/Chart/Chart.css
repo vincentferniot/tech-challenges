@@ -1,0 +1,31 @@
+.Chart {
+  background-color: rgba(0,0,0,.4);
+  border-radius: 10px;
+  padding: 2rem;
+}
+
+.Chart__title {
+  font-weight: bold;
+  border-bottom: rgb(0, 0, 0) 2px solid;
+  padding-bottom: .5rem;
+  font-size: 1.5em;
+}
+
+.Chart__products {
+  font-size: 4rem;
+  font-weight: bold;
+}
+
+.Chart__visit-dates {
+  margin-bottom: 3rem;
+}
+
+.Chart__year {
+  font-size: 1.5em;
+}
+
+.Chart__dates {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}

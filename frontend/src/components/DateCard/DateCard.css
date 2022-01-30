@@ -1,0 +1,32 @@
+.DateCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  background-color: white;
+  border-radius: 10px;
+  filter: drop-shadow(5px, 5px, 5px, rgba(0, 0, 0, .7));
+}
+
+.DateCard p {
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  text-align: center;
+  padding: 0 .5rem;
+}
+
+.DateCard__day {
+  color: rgb(63, 63, 63);
+  font-size: 3rem;
+  font-weight: bolder;
+}
+
+.DateCard__month {
+  background-color: rgb(216, 68, 68);
+  color: white;
+  font-size: 1.5rem;
+  font-weight: bolder;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
