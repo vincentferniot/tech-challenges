@@ -1,12 +1,13 @@
 import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../hooks';
+import { getFilteredSurveysList } from '../../selectors/surveys';
 import { fetchSurveysAsync } from '../../reducers/surveys';
 import SurveyItem from '../SurveyItem';
 import './Surveys.css';
 
 function Surveys() {
     const dispatch = useAppDispatch();
-    const { list } = useAppSelector((state) => state.surveys);
+    const list = useAppSelector(getFilteredSurveysList);
 
     useEffect(() => {
         dispatch(fetchSurveysAsync());

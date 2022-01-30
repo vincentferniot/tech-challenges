@@ -1,6 +1,7 @@
 import { random } from 'colord';
 import type { RootState } from '../store';
 import dayjs from 'dayjs';
+import { Survey } from '../reducers/surveys';
 
 interface ProcessData {
   type: 'qcm' | 'date' | 'numeric',
@@ -42,5 +43,14 @@ export const processData = (state: RootState): ProcessData[] => {
         ]
       },
     }
+  });
+}
+
+export const getFilteredSurveysList = (state: RootState): Survey[] => {
+  return state.surveys.list.filter(survey => {
+    const hasCode = survey.code.toLowerCase().includes(state.surveys.search.toLowerCase());
+    const hasName = survey.name.toLowerCase().includes(state.surveys.search.toLowerCase());
+
+    return hasCode || hasName;
   });
 }

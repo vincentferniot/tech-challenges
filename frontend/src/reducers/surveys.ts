@@ -15,18 +15,24 @@ export interface SurveysState {
     list: Survey[];
     current: SurveyData[] | [];
     status: 'idle' | 'loading' | 'failed';
+    search: string,
 }
 
 const initialState: SurveysState = {
     list: [],
     status: 'idle',
     current: [],
+    search: 'cucou',
 };
 
 export const surveysSlice = createSlice({
     name: 'surveys',
     initialState,
-    reducers: {},
+    reducers: {
+      changeSearchValue: (state, action) => {
+        state.search = action.payload;
+      }
+    },
     extraReducers: (builder) => {
       builder
         .addCase(fetchSurveysAsync.pending, (state) => {
@@ -64,11 +70,10 @@ export const fetchSurveyByCodeAsync = createAsyncThunk(
   'surveys/fetchByCode',
   async (code?: string) => {
     const res = await fetchSurveyByCode(code);
-    console.log(res.data);
     return res.data;
   }
 );
 
-// export const {} = surveysSlice.actions;
+export const { changeSearchValue } = surveysSlice.actions;
 
 export default surveysSlice.reducer;
